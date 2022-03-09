@@ -7,10 +7,10 @@ set(CMAKE_MODULE_PATH ${SOS_SDK_PATH}/cmake)
 set(CMAKE_TOOLCHAIN_FILE ${CMAKE_MODULE_PATH}/sos-toolchain.cmake)
 include(sos-sdk)
 
-set(CLI_PROJECT_VERSION 0.1 CACHE INTERNAL "cli application version")
+set(DOXY2MD_PROJECT_VERSION 0.1 CACHE INTERNAL "doxy2md application version")
 project(cli
 	LANGUAGES CXX C
-	VERSION ${CLI_PROJECT_VERSION}
+	VERSION ${DOXY2MD_PROJECT_VERSION}
 	)
 
 include(CTest)
@@ -22,6 +22,6 @@ add_custom_target(pull
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_subdirectory(SDK SDK EXCLUDE_FROM_ALL)
-add_subdirectory(cli)
+add_subdirectory(app)
 add_subdirectory(tests)
 

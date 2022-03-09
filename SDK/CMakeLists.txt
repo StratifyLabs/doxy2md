@@ -50,16 +50,7 @@ set(MBEDTLS_CONFIG_FILE ${CMAKE_CURRENT_SOURCE_DIR}/config/mbedtls/config.h CACH
 
 add_subdirectory(dependencies/CMakeSDK CMakeSDK)
 
-if(SOS_IS_ARM)
-  sdk_add_subdirectory(StratifyOS main)
-  sdk_add_subdirectory(SosAPI main)
-  sdk_add_subdirectory(HalAPI main)
-endif()
-
 sdk_add_subdirectory(JsonAPI main)
-sdk_add_subdirectory(InetAPI main)
-sdk_add_subdirectory(CryptoAPI main)
-sdk_add_subdirectory(CloudAPI main)
 
 
 
