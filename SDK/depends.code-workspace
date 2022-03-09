@@ -1,0 +1,28 @@
+{
+	"folders": [
+		{
+			"path": "dependencies/API"
+		},
+		{
+			"path": "dependencies/CMakeSDK"
+		},
+		{
+			"path": "dependencies/CryptoAPI"
+		},
+		{
+			"path": "dependencies/InetAPI"
+		},
+		{
+			"path": "dependencies/JsonAPI"
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			"SDK/dependencies": true
+		},
+		"git.detectSubmodules": false,
+		"git.scanRepositories": [
+			"SDK/dependencies/API"
+		]
+	}
+}

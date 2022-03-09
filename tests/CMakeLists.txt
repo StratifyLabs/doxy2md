@@ -1,0 +1,14 @@
+
+set(PROGRAM_NAME ${CMAKE_CURRENT_SOURCE_DIR}/../${PROJECT_NAME}/build_release_link/${PROJECT_NAME}_release_link.elf)
+
+add_test(NAME ${PROJECT_NAME}_json
+  COMMAND ${PROGRAM_NAME} --json
+  WORKING_DIRECTORY ${TMP_DIRECTORY}
+  )
+
+add_test(NAME ${PROJECT_NAME}_no_arguments
+  COMMAND ${PROGRAM_NAME}
+  WORKING_DIRECTORY ${TMP_DIRECTORY}
+  )
+
+

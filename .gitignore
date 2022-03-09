@@ -1,0 +1,7 @@
+
+cmake_link/
+cmake_arm/
+SDK/dependencies/
+SDK/StratifyLabs-SDK/
+CMakeLists.txt.user
+.idea/
