@@ -56,7 +56,9 @@ private:
   void handle_innerfile(json::JsonValue input);
   void handle_itemizedlist(json::JsonValue input);
   void handle_listitem(json::JsonValue input);
+  void handle_listofallmembers(json::JsonValue input);
   void handle_location(json::JsonValue input);
+  void handle_member(json::JsonValue input);
   void handle_memberdef(json::JsonValue input);
   void handle_name(json::JsonValue input);
   void handle_para(json::JsonValue input);

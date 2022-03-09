@@ -8,7 +8,6 @@
 #include <json/JsonDocument.hpp>
 
 #include "DoxyJson.hpp"
-
 #include "macros.hpp"
 
 using namespace json;
@@ -93,7 +92,9 @@ void DoxyJson::handle(var::StringView name, json::JsonValue input) {
   HANDLE(innerfile, input)
   HANDLE(itemizedlist, input)
   HANDLE(listitem, input)
+  HANDLE(listofallmembers, input)
   HANDLE(location, input)
+  HANDLE(member, input)
   HANDLE(memberdef, input)
   HANDLE(name, input)
   HANDLE(para, input)
@@ -262,7 +263,25 @@ void DoxyJson::handle_listitem(json::JsonValue input) {
   print(input);
   newline();
 }
+
+void DoxyJson::handle_listofallmembers(json::JsonValue input) {
+  newline();
+  newline();
+  print(input);
+}
+
 void DoxyJson::handle_location(json::JsonValue input) { print(input); }
+
+void DoxyJson::handle_member(json::JsonValue input) {
+  const auto id = get_id(input);
+  const auto scope = get_value_as_string_view(input, "scope");
+  const auto name = get_value_as_string_view(input, "name");
+
+  print("- " | name);
+  newline();
+
+}
+
 void DoxyJson::handle_memberdef(json::JsonValue input) {
 
   const auto kind = get_value_as_string_view(input, "@kind");

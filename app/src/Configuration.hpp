@@ -44,6 +44,7 @@ public:
     JSON_ACCESS_STRING(SectionDef,typedef);
     JSON_ACCESS_STRING(SectionDef,define);
     JSON_ACCESS_STRING(SectionDef,enum);
+    JSON_ACCESS_STRING_WITH_KEY(SectionDef,public-attrib,public_attribute);
   };
 
   class SimpleSect : public json::JsonValue {

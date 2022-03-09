@@ -17,7 +17,8 @@ Configuration Configuration::make_defaults() {
                           .set_func("Functions")
                           .set_typedef("Type Definitions")
                           .set_enum("Enumerations")
-                          .set_define("Macro Definitions"));
+                          .set_define("Macro Definitions")
+                          .set_public_attribute("Members"));
   result.set_simplesect(SimpleSect().set_return("Returns:"));
 
   return result;
