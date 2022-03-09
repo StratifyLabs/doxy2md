@@ -133,6 +133,11 @@ private:
       .replace(String::Replace{.new_string = "-", .old_string = "_"});
   }
 
+  var::String get_ref_id(json::JsonArray input) {
+    return String(get_value_as_string_view(input, "@refid"))
+      .replace(String::Replace{.new_string = "-", .old_string = "_"});
+  }
+
   void print(var::StringView value) { m_printer.print(value); }
 
   void print_hyperlink(var::StringView text, var::StringView url){

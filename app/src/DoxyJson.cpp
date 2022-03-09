@@ -176,17 +176,22 @@ void DoxyJson::handle_compounddef(json::JsonValue input) {
   if (config().general().is_generate_summary() == false) {
     newline();
     newline();
-    printer().message("compounddef " | title);
-    MarkdownPrinter::Header header(m_printer, title);
-    newline();
-    newline();
-  }
+    const auto effective_title = [&]() {
+      if (title.is_empty()) {
+        const auto compound_name
+          = get_value_as_string_view(input, "compoundname");
+        return "`" | kind | "` " | compound_name;
+      }
+      return GeneralString(title);
+    }();
 
-  if (config().general().is_generate_summary() == true) {
-    MarkdownPrinter::Header md_po(m_printer, "Details");
+    printer().message("compounddef " | effective_title);
+    MarkdownPrinter::Header header(m_printer, effective_title);
     newline();
     print(input);
   } else {
+    MarkdownPrinter::Header md_po(m_printer, "Details");
+    newline();
     print(input);
   }
 }
@@ -239,11 +244,10 @@ void DoxyJson::handle_enumvalue(json::JsonValue input) {
   print(input);
 }
 
-void DoxyJson::handle_highlight(json::JsonValue input){
+void DoxyJson::handle_highlight(json::JsonValue input) {
   printer().debug("highlight");
   print(input);
 }
-
 
 void DoxyJson::handle_inbodydescription(json::JsonValue input) { print(input); }
 void DoxyJson::handle_innerfile(json::JsonValue input) {}
@@ -267,7 +271,14 @@ void DoxyJson::handle_listitem(json::JsonValue input) {
 void DoxyJson::handle_listofallmembers(json::JsonValue input) {
   newline();
   newline();
-  print(input);
+  if( const auto title = config().listofallmembers().get_title(); !title.is_empty() ){
+    MarkdownPrinter::Header header(m_printer, title);
+    newline();
+    newline();
+    print(input);
+  } else {
+    print(input);
+  }
 }
 
 void DoxyJson::handle_location(json::JsonValue input) { print(input); }
@@ -277,9 +288,9 @@ void DoxyJson::handle_member(json::JsonValue input) {
   const auto scope = get_value_as_string_view(input, "scope");
   const auto name = get_value_as_string_view(input, "name");
 
-  print("- " | name);
+  print("- ");
+  print_hyperlink(scope | "::" | name, "#" + get_ref_id(input));
   newline();
-
 }
 
 void DoxyJson::handle_memberdef(json::JsonValue input) {
@@ -324,7 +335,9 @@ void DoxyJson::handle_memberdef(json::JsonValue input) {
       print(type);
     }
     print(" `" | name | "`");
-    print(" `" | argsstring | "`");
+    if (argsstring.is_empty() == false) {
+      print(" `" | argsstring | "`");
+    }
     newline();
     newline();
   }
@@ -336,14 +349,22 @@ void DoxyJson::handle_name(json::JsonValue input) {}
 void DoxyJson::handle_para(json::JsonValue input) { print(input); }
 
 void DoxyJson::handle_param(json::JsonValue input) {
-  const auto type = get_value_as_string_view(input, "type");
+  const auto type = get_value(input, "type");
   const auto declname = get_value_as_string_view(input, "declname");
 
   if (is_summary()) {
     return;
   }
 
-  print("- `" | type | "` `" | declname | "`");
+  print("- ");
+  if( type.is_string() ) {
+    print("`" | type.to_string_view() | "`");
+  } else {
+    print(type);
+    print(" ");
+  }
+  print("`" | declname | "`");
+
   const auto brief_description = get_value(input, "briefdescription");
   if (!brief_description.is_null()) {
     print(": ");
@@ -373,15 +394,19 @@ void DoxyJson::handle_ref(json::JsonValue input) {
 }
 
 void DoxyJson::handle_sectiondef(json::JsonValue input) {
+  const auto kind_string = get_value_as_string_view(input.to_array(), "@kind");
+  if( Configuration::SectionDef::is_private(kind_string) && !config().general().is_show_private() ){
+    return;
+  }
   const auto kind = [&]() {
-    const auto value = get_value_as_string_view(input.to_array(), "@kind");
-
-    const auto result = config().sectiondef().to_object().at(value);
+    const auto result = config().sectiondef().to_object().at(kind_string);
     if (result.is_valid()) {
       return result.to_cstring();
     }
     return "Unknown SectionDef";
   }();
+
+
 
   newline();
   newline();

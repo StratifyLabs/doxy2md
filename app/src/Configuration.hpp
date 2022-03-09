@@ -23,6 +23,14 @@ public:
     JSON_ACCESS_STRING_WITH_KEY(General,linkSuffix,link_suffix);
     JSON_ACCESS_BOOL_WITH_KEY(General,generateSummary,generate_summary);
     JSON_ACCESS_BOOL_WITH_KEY(General,frontMatter,front_matter);
+    JSON_ACCESS_BOOL_WITH_KEY(General,showPrivate,show_private);
+    JSON_ACCESS_BOOL_WITH_KEY(General,showProtected,show_protected);
+  };
+
+  class ListOfAllMembers : public json::JsonValue {
+  public:
+    JSON_ACCESS_CONSTRUCT_OBJECT(ListOfAllMembers);
+    JSON_ACCESS_STRING(ListOfAllMembers,title);
   };
 
   class MemberDef : public json::JsonValue {
@@ -45,6 +53,21 @@ public:
     JSON_ACCESS_STRING(SectionDef,define);
     JSON_ACCESS_STRING(SectionDef,enum);
     JSON_ACCESS_STRING_WITH_KEY(SectionDef,public-attrib,public_attribute);
+    JSON_ACCESS_STRING_WITH_KEY(SectionDef,public-func,public_function);
+    JSON_ACCESS_STRING_WITH_KEY(SectionDef,private-attrib,private_attribute);
+    JSON_ACCESS_STRING_WITH_KEY(SectionDef,private-func,private_function);
+    JSON_ACCESS_STRING_WITH_KEY(SectionDef,protected-func,protected_function);
+    JSON_ACCESS_STRING_WITH_KEY(SectionDef,private-static-func,private_static_function);
+    JSON_ACCESS_STRING_WITH_KEY(SectionDef,public-static-func,public_static_function);
+    JSON_ACCESS_STRING_WITH_KEY(SectionDef,protected-attrib,protected_attribute);
+
+    static bool is_private(var::StringView kind){
+      return kind.find("private") != var::StringView::npos;
+    }
+
+    static bool is_proteted(var::StringView kind){
+      return kind.find("protected") != var::StringView::npos;
+    }
   };
 
   class SimpleSect : public json::JsonValue {
@@ -55,6 +78,7 @@ public:
 
   JSON_ACCESS_OBJECT(Configuration,DetailedDescription,detaileddescription);
   JSON_ACCESS_OBJECT(Configuration,General,general);
+  JSON_ACCESS_OBJECT(Configuration,ListOfAllMembers,listofallmembers);
   JSON_ACCESS_OBJECT(Configuration,MemberDef,memberdef);
   JSON_ACCESS_OBJECT(Configuration,ProgramListing,programlisting);
   JSON_ACCESS_OBJECT(Configuration,SectionDef,sectiondef);
