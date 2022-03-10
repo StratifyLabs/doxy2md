@@ -76,6 +76,7 @@ void DoxyJson::process_details(var::StringView name, json::JsonValue input) {
 void DoxyJson::handle(var::StringView name, json::JsonValue input) {
 
   HANDLE(argsstring, input)
+  HANDLE(basecompoundref, input)
   HANDLE(briefdescription, input)
   HANDLE(codeline, input)
   HANDLE(compounddef, input)
@@ -88,7 +89,7 @@ void DoxyJson::handle(var::StringView name, json::JsonValue input) {
   HANDLE(enumvalue, input)
   HANDLE(highlight, input)
   HANDLE(inbodydescription, input)
-  HANDLE(innerfile, input)
+  HANDLE(innerclass, input)
   HANDLE(innerfile, input)
   HANDLE(itemizedlist, input)
   HANDLE(listitem, input)
@@ -134,6 +135,9 @@ void DoxyJson::handle(var::StringView name, json::JsonValue input) {
 }
 
 void DoxyJson::handle_argsstring(json::JsonValue input) {}
+void DoxyJson::handle_basecompoundref(json::JsonValue input){
+
+}
 
 void DoxyJson::handle_briefdescription(json::JsonValue input) {
   if (is_summary()) {
@@ -199,6 +203,8 @@ void DoxyJson::handle_compounddef(json::JsonValue input) {
 void DoxyJson::handle_compoundname(json::JsonValue input) {}
 void DoxyJson::handle_declname(json::JsonValue input) {}
 void DoxyJson::handle_definition(json::JsonValue input) {}
+void DoxyJson::handle_derivedcompoundref(json::JsonValue input){}
+
 void DoxyJson::handle_detaileddescription(json::JsonValue input) {
   if (is_summary()) {
     return;
@@ -237,11 +243,20 @@ void DoxyJson::handle_enumvalue(json::JsonValue input) {
     return;
   }
 
-  newline();
-  newline();
-  MarkdownPrinter::Header header(m_printer, name);
-  newline();
-  print(input);
+
+  const auto brief = get_value(input, "briefdescription");
+  const auto detailed = get_value(input, "detaileddescription");
+
+  if( brief.is_null() && detailed.is_null() ){
+    print("- " | name);
+    newline();
+  } else {
+    newline();
+    newline();
+    MarkdownPrinter::Header header(m_printer, name);
+    newline();
+    print(input);
+  }
 }
 
 void DoxyJson::handle_highlight(json::JsonValue input) {
@@ -250,6 +265,7 @@ void DoxyJson::handle_highlight(json::JsonValue input) {
 }
 
 void DoxyJson::handle_inbodydescription(json::JsonValue input) { print(input); }
+void DoxyJson::handle_innerclass(json::JsonValue input) {}
 void DoxyJson::handle_innerfile(json::JsonValue input) {}
 void DoxyJson::handle_itemizedlist(json::JsonValue input) {
   if (is_summary()) {
@@ -328,6 +344,7 @@ void DoxyJson::handle_memberdef(json::JsonValue input) {
   newline();
 
   if (!definition.is_empty()) {
+#if 0
     const auto type = get_value(input, "type");
     if (type.is_string()) {
       print("`" | type.to_string_view() | "`");
@@ -338,8 +355,28 @@ void DoxyJson::handle_memberdef(json::JsonValue input) {
     if (argsstring.is_empty() == false) {
       print(" `" | argsstring | "`");
     }
+#endif
+    {
+      MarkdownPrinter::Code code(
+        m_printer,
+        config().programlisting().get_language());
+      print(definition | " " | argsstring);
+    }
+    newline();
+
+    const auto type = get_value(input, "type");
+    print("***Type:*** ");
+    if (type.is_string()) {
+      print("`" | type.to_string_view() | "`");
+    } else {
+      print(type);
+    }
+
     newline();
     newline();
+    print("***Parameters:*** ");
+    newline();
+
   }
   print(input);
 }
@@ -358,7 +395,7 @@ void DoxyJson::handle_param(json::JsonValue input) {
 
   print("- ");
   if( type.is_string() ) {
-    print("`" | type.to_string_view() | "`");
+    print("`" | type.to_string_view() | "` ");
   } else {
     print(type);
     print(" ");

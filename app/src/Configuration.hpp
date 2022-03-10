@@ -52,13 +52,19 @@ public:
     JSON_ACCESS_STRING(SectionDef,typedef);
     JSON_ACCESS_STRING(SectionDef,define);
     JSON_ACCESS_STRING(SectionDef,enum);
+    JSON_ACCESS_STRING_WITH_KEY(SectionDef,public-type,public_type);
+    JSON_ACCESS_STRING_WITH_KEY(SectionDef,private-type,private_type);
+    JSON_ACCESS_STRING_WITH_KEY(SectionDef,protected-type,protected_type);
     JSON_ACCESS_STRING_WITH_KEY(SectionDef,public-attrib,public_attribute);
     JSON_ACCESS_STRING_WITH_KEY(SectionDef,public-func,public_function);
     JSON_ACCESS_STRING_WITH_KEY(SectionDef,private-attrib,private_attribute);
     JSON_ACCESS_STRING_WITH_KEY(SectionDef,private-func,private_function);
     JSON_ACCESS_STRING_WITH_KEY(SectionDef,protected-func,protected_function);
     JSON_ACCESS_STRING_WITH_KEY(SectionDef,private-static-func,private_static_function);
+    JSON_ACCESS_STRING_WITH_KEY(SectionDef,protected-static-func,protected_static_function);
     JSON_ACCESS_STRING_WITH_KEY(SectionDef,public-static-func,public_static_function);
+    JSON_ACCESS_STRING_WITH_KEY(SectionDef,private-static-attrib,private_static_attribute);
+    JSON_ACCESS_STRING_WITH_KEY(SectionDef,public-static-attrib,public_static_attribute);
     JSON_ACCESS_STRING_WITH_KEY(SectionDef,protected-attrib,protected_attribute);
 
     static bool is_private(var::StringView kind){

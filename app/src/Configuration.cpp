@@ -25,6 +25,9 @@ Configuration Configuration::make_defaults() {
                           .set_typedef("Type Definitions")
                           .set_enum("Enumerations")
                           .set_define("Macro Definitions")
+                          .set_public_type("Types")
+                          .set_private_type("Private Types")
+                          .set_protected_type("Protected Types")
                           .set_public_attribute("Members")
                           .set_private_attribute("Private Members")
                           .set_public_function("Functions")
@@ -32,7 +35,10 @@ Configuration Configuration::make_defaults() {
                           .set_protected_function("Protected Functions")
                           .set_protected_attribute("Protected Attributes")
                           .set_public_static_function("Static Functions")
+                          .set_protected_static_function("Protected Static Functions")
                           .set_private_static_function("Private Static Functions")
+                          .set_private_static_attribute("Private Static Attibutes")
+                          .set_public_static_attribute("Static Attibutes")
   );
 
   result.set_simplesect(SimpleSect().set_return("Returns:"));

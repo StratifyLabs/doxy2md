@@ -41,18 +41,21 @@ private:
   void handle(var::StringView name, json::JsonValue input);
 
   void handle_argsstring(json::JsonValue input);
+  void handle_basecompoundref(json::JsonValue input);
   void handle_briefdescription(json::JsonValue input);
   void handle_codeline(json::JsonValue input);
   void handle_compounddef(json::JsonValue input);
   void handle_compoundname(json::JsonValue input);
   void handle_declname(json::JsonValue input);
   void handle_definition(json::JsonValue input);
+  void handle_derivedcompoundref(json::JsonValue input);
   void handle_detaileddescription(json::JsonValue input);
   void handle_doxygen(json::JsonValue input);
   void handle_emphasis(json::JsonValue input);
   void handle_enumvalue(json::JsonValue input);
   void handle_highlight(json::JsonValue input);
   void handle_inbodydescription(json::JsonValue input);
+  void handle_innerclass(json::JsonValue input);
   void handle_innerfile(json::JsonValue input);
   void handle_itemizedlist(json::JsonValue input);
   void handle_listitem(json::JsonValue input);
