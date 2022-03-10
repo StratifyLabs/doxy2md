@@ -8,7 +8,7 @@ set(CMAKE_TOOLCHAIN_FILE ${CMAKE_MODULE_PATH}/sos-toolchain.cmake)
 include(sos-sdk)
 
 set(DOXY2MD_PROJECT_VERSION 0.1 CACHE INTERNAL "doxy2md application version")
-project(cli
+project(doxy2md
 	LANGUAGES CXX C
 	VERSION ${DOXY2MD_PROJECT_VERSION}
 	)
