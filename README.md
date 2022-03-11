@@ -61,3 +61,7 @@ doxy2md --showConfiguration --json > config.json
 MIT licensed (or similarly permissive) contributions are welcome. I built `doxy2md` because everything else I tried to use to convert `doxygen` output to `markdown` had shortcomings (especially when it came to `C++`). It is working for my purposes, but is designed to be highly flexible using the `configuration` input. 
 
 It is written in `C++` so that `C++` developers can make changes optimized for documenting `C` and/or `C++` code.
+
+## Example Output
+
+The [documentation for the Stratify Labs API framework](https://docs.stratifylabs.dev/docs/application/Introduction) is generated using `doxy2md` and then published using [docusaurus](https://docusaurus.io/).
