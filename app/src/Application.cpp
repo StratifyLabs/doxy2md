@@ -43,34 +43,59 @@ void Application::run(const sys::Cli &cli) {
       if (Path::suffix(source_path) == "xml") {
         api::ErrorScope error_scope;
 
-        const auto output_directory
-          = options.destination() / source_object.get_output();
-        FileSystem().create_directory(output_directory);
-
-        const auto output_path
-          = output_directory / Path::base_name(source_path) & ".md";
-
-        printer().key("output", output_path);
-
-        DoxyJson doxy_json(options, link_tag_container);
-
-        doxy_json.set_relative_output_folder(source_object.get_output())
-          .process_file(options.source() / source_folder / source_path);
-
-        if (is_success()) {
-          for(const auto & item: doxy_json.link_container()){
-            link_container.push(item);
+        const auto is_excluded = [&]() {
+          const auto exclude_container = source_object.get_exclude();
+          for (const auto &item : exclude_container) {
+            if (source_path.string_view().find(item) != StringView::npos) {
+              return true;
+            }
           }
-          File(File::IsOverwrite::yes, output_path).write(doxy_json.output());
+          return false;
+        }();
+
+        const auto is_included = [&]() {
+          const auto include_container = source_object.get_include();
+          if (include_container.count() == 0) {
+            return true;
+          }
+          for (const auto &item : include_container) {
+            if (source_path.string_view().find(item) != StringView::npos) {
+              return true;
+            }
+          }
+          return false;
+        }();
+
+        if (!is_excluded && is_included) {
+
+          const auto output_directory
+            = options.destination() / source_object.get_output();
+          FileSystem().create_directory(output_directory);
+
+          const auto output_path
+            = output_directory / Path::base_name(source_path) & ".md";
+
+          printer().key("output", output_path);
+
+          DoxyJson doxy_json(options, link_tag_container);
+
+          doxy_json.set_relative_output_folder(source_object.get_output())
+            .process_file(options.source() / source_folder / source_path);
+
+          if (is_success()) {
+            for (const auto &item : doxy_json.link_container()) {
+              link_container.push(item);
+            }
+            File(File::IsOverwrite::yes, output_path).write(doxy_json.output());
+          }
+          check_error();
         }
-        check_error();
       } else {
         printer().info("skipping");
       }
     }
     link_tag_container.push(
-      {.link_container = link_container,
-       .path = source_object.get_output()});
+      {.link_container = link_container, .path = source_object.get_output()});
   }
 }
 

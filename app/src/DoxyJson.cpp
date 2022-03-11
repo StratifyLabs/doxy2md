@@ -234,7 +234,6 @@ void DoxyJson::handle_compounddef(json::JsonValue input) {
     printer().message("compounddef summary" | effective_title);
     MarkdownPrinter::Header header(m_printer, effective_title);
     newline();
-    newline();
     MarkdownPrinter::Header md_po(m_printer, "Summary");
     newline();
     print(input);
@@ -281,9 +280,9 @@ void DoxyJson::handle_detaileddescription(json::JsonValue input) {
   }
 
   newline();
+  newline();
   const auto title = config().detaileddescription().get_title();
   if (!title.is_empty()) {
-    newline();
     MarkdownPrinter::Header header(m_printer, title);
     printer().debug("detaileddescription ");
     newline();
@@ -390,7 +389,6 @@ void DoxyJson::handle_listofallmembers(json::JsonValue input) {
         !title.is_empty()) {
       MarkdownPrinter::Header header(m_printer, title);
       newline();
-      newline();
       print(input);
     } else {
       print(input);
@@ -443,7 +441,7 @@ void DoxyJson::handle_memberdef(json::JsonValue input) {
     }
     return;
   }
-  newline();
+
   newline();
   printer().message("memberdef " | show_name);
 
@@ -558,9 +556,8 @@ void DoxyJson::handle_sectiondef(json::JsonValue input) {
   }();
 
   newline();
-  newline();
   MarkdownPrinter::Header section_header(m_printer, kind);
-  newline();
+
   if (is_summary()) {
     MarkdownPrinter::List list(m_printer, MarkdownPrinter::ListType::unordered);
     print(input);

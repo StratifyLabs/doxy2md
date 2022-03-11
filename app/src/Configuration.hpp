@@ -46,6 +46,8 @@ public:
       JSON_ACCESS_CONSTRUCT_OBJECT(Source);
       JSON_ACCESS_STRING(Source,input);
       JSON_ACCESS_STRING(Source,output);
+      JSON_ACCESS_STRING_ARRAY(Source,exclude);
+      JSON_ACCESS_STRING_ARRAY(Source,include);
     };
 
     JSON_ACCESS_CONSTRUCT_OBJECT(Input);
