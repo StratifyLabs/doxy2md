@@ -99,7 +99,7 @@ private:
   }
 
   bool is_internal_link(var::StringView item) const {
-    if(is_link_with_hash(item) ){
+    if (is_link_with_hash(item)) {
       const auto link_without_hash = get_link_without_hash(item);
       return link_without_hash == m_compound_def_id.string_view();
     }
@@ -111,8 +111,9 @@ private:
     if (item.length() < hash.length() + 1) {
       return false;
     }
-    const auto item_hash = StringView(item).pop_front(item.length() - hash.length());
-    if( item_hash.find("_") != StringView::npos ){
+    const auto item_hash
+      = StringView(item).pop_front(item.length() - hash.length());
+    if (item_hash.find("_") != StringView::npos) {
       return false;
     }
     return item.pop_back(hash.length()).back() == '_';
@@ -140,27 +141,32 @@ private:
     const auto is_internal = is_internal_link(id);
     const auto is_external_with_hash = !is_internal && is_link_with_hash(id);
 
+    const auto file_suffix = config().general().get_link_suffix();
+
     if (!is_internal) {
       const auto id_without_hash
         = is_external_with_hash ? get_link_without_hash(id) : id;
 
       const auto external_prefix = get_external_prefix(id);
 
-
       if (external_prefix.is_empty()) {
-        return id_without_hash & "#" & id;
+        if (id_without_hash == id) {
+          return id;
+        }
+        return id_without_hash & file_suffix & "#" & id;
       }
       // is there a prefix path
-      if( id_without_hash == id ){
-        return m_external_prefix & external_prefix / id_without_hash;
+      if (id_without_hash == id) {
+        return m_external_prefix & external_prefix / id_without_hash
+               & file_suffix;
       }
 
-      return m_external_prefix & external_prefix / id_without_hash & "#" & id;
+      return m_external_prefix & external_prefix / id_without_hash & file_suffix
+             & "#" & id;
     }
 
     return (is_internal_link(id) ? "#" : "") & id;
   }
-
 
   var::String get_id(json::JsonArray input) const {
     return String(get_value_as_string_view(input, "@id"));

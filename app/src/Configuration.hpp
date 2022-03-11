@@ -27,8 +27,7 @@ public:
     JSON_ACCESS_BOOL_WITH_KEY(General,frontMatter,front_matter);
     JSON_ACCESS_BOOL_WITH_KEY(General,showPrivate,show_private);
     JSON_ACCESS_BOOL_WITH_KEY(General,showProtected,show_protected);
-    JSON_ACCESS_BOOL_WITH_KEY(General,useRelativePath,use_relative_paths);
-    JSON_ACCESS_STRING_WITH_KEY(General,basePath,base_path);
+    JSON_ACCESS_BOOL_WITH_KEY(General,useRelativePaths,use_relative_paths);
   };
 
   class InnerClass : public json::JsonValue {
@@ -46,6 +45,7 @@ public:
       JSON_ACCESS_CONSTRUCT_OBJECT(Source);
       JSON_ACCESS_STRING(Source,input);
       JSON_ACCESS_STRING(Source,output);
+      JSON_ACCESS_STRING_WITH_KEY(Source,baseUrl,base_url);
       JSON_ACCESS_STRING_ARRAY(Source,exclude);
       JSON_ACCESS_STRING_ARRAY(Source,include);
     };

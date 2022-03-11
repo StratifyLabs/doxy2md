@@ -21,15 +21,16 @@ DoxyJson &DoxyJson::process_file(var::StringView path) {
     API_RETURN_VALUE_ASSIGN_ERROR(*this, path | " does not exist", EEXIST);
   }
 
-  {
-
-    if (relative_output_folder() != ".") {
-      const auto path_container
-        = relative_output_folder().string_view().split("/");
-      for (const auto &path : path_container) {
-        m_external_prefix &= "../";
-      }
+  if (
+    config().general().is_use_relative_paths()
+    && relative_output_folder() != ".") {
+    const auto path_container
+      = relative_output_folder().string_view().split("/");
+    for (const auto &path : path_container) {
+      m_external_prefix &= "../";
     }
+  } else {
+    m_external_prefix = "";
   }
 
   JsonDocument json_document;
@@ -262,8 +263,6 @@ void DoxyJson::handle_declname(json::JsonValue input) {
 }
 void DoxyJson::handle_definition(json::JsonValue input) {
   HANDLE_ADD_LINKS(input);
-
-
 }
 void DoxyJson::handle_derivedcompoundref(json::JsonValue input) {
   HANDLE_ADD_LINKS(input);

@@ -14,7 +14,6 @@ Configuration Configuration::make_defaults() {
                        .set_generate_anchor_html(true)
                        .set_generate_summary(true)
                        .set_use_relative_paths(true)
-                       .set_base_path("")
                        .set_front_matter(false));
 
   result.set_innerclass(InnerClass().set_label("- Nested: "));

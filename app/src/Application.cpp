@@ -98,8 +98,12 @@ void Application::run(const sys::Cli &cli) {
         printer().info("skipping");
       }
     }
-    link_tag_container.push(
-      {.link_container = link_container, .path = source_object.get_output()});
+    {
+      const auto base_url = source_object.get_base_url();
+      const auto path = base_url.is_empty() ? PathString(source_object.get_output()) : base_url / source_object.get_output();
+      link_tag_container.push(
+        {.link_container = link_container, .path = path});
+    }
   }
 }
 
