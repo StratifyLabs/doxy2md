@@ -29,4 +29,7 @@
     return;                                                                    \
   }
 
+#define HANDLE_ADD_LINKS(input)                                                \
+  if (add_links(input)) return
+
 #endif // DOXY2MD_MACROS_HPP

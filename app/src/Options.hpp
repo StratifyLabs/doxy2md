@@ -74,6 +74,8 @@ public:
       m_configuration = Configuration::make_defaults().to_object().update(
         user_configuration,
         json::JsonObject::UpdateFlags::recursive);
+    } else {
+      m_configuration = Configuration::make_defaults();
     }
 
     if (const auto value = cli.get_option("template"); !value.is_empty()) {

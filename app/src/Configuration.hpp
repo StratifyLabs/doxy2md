@@ -22,9 +22,27 @@ public:
     JSON_ACCESS_CONSTRUCT_OBJECT(General);
     JSON_ACCESS_STRING_WITH_KEY(General,linkSuffix,link_suffix);
     JSON_ACCESS_BOOL_WITH_KEY(General,generateSummary,generate_summary);
+    JSON_ACCESS_BOOL_WITH_KEY(General,generateAnchorHeaders,generate_anchor_headers);
+    JSON_ACCESS_BOOL_WITH_KEY(General,generateAnchorHtml,generate_anchor_html);
     JSON_ACCESS_BOOL_WITH_KEY(General,frontMatter,front_matter);
     JSON_ACCESS_BOOL_WITH_KEY(General,showPrivate,show_private);
     JSON_ACCESS_BOOL_WITH_KEY(General,showProtected,show_protected);
+    JSON_ACCESS_BOOL_WITH_KEY(General,useRelativePath,use_relative_paths);
+    JSON_ACCESS_STRING_WITH_KEY(General,basePath,base_path);
+  };
+
+  class Input : public json::JsonValue {
+  public:
+
+    class Source : public json::JsonValue {
+    public:
+      JSON_ACCESS_CONSTRUCT_OBJECT(Source);
+      JSON_ACCESS_STRING(Source,input);
+      JSON_ACCESS_STRING(Source,output);
+    };
+
+    JSON_ACCESS_CONSTRUCT_OBJECT(Input);
+    JSON_ACCESS_ARRAY(Input,Source,sources);
   };
 
   class ListOfAllMembers : public json::JsonValue {
@@ -37,6 +55,11 @@ public:
   public:
     JSON_ACCESS_CONSTRUCT_OBJECT(MemberDef);
     JSON_ACCESS_STRING(MemberDef,function);
+    JSON_ACCESS_STRING(MemberDef,variable);
+    JSON_ACCESS_STRING(MemberDef,define);
+    JSON_ACCESS_STRING(MemberDef,friend);
+    JSON_ACCESS_STRING(MemberDef,typedef);
+    JSON_ACCESS_STRING(MemberDef,enum);
   };
 
   class ProgramListing : public json::JsonValue {
@@ -48,24 +71,28 @@ public:
   class SectionDef : public json::JsonValue {
   public:
     JSON_ACCESS_CONSTRUCT_OBJECT(SectionDef);
-    JSON_ACCESS_STRING(SectionDef,func);
-    JSON_ACCESS_STRING(SectionDef,typedef);
+
     JSON_ACCESS_STRING(SectionDef,define);
     JSON_ACCESS_STRING(SectionDef,enum);
-    JSON_ACCESS_STRING_WITH_KEY(SectionDef,public-type,public_type);
+    JSON_ACCESS_STRING(SectionDef,friend);
+    JSON_ACCESS_STRING(SectionDef,func);
+    JSON_ACCESS_STRING(SectionDef,typedef);
+
+
+    JSON_ACCESS_STRING_WITH_KEY(SectionDef,private-attrib,private_attribute);
+    JSON_ACCESS_STRING_WITH_KEY(SectionDef,private-func,private_function);
+    JSON_ACCESS_STRING_WITH_KEY(SectionDef,private-static-attrib,private_static_attribute);
+    JSON_ACCESS_STRING_WITH_KEY(SectionDef,private-static-func,private_static_function);
     JSON_ACCESS_STRING_WITH_KEY(SectionDef,private-type,private_type);
+    JSON_ACCESS_STRING_WITH_KEY(SectionDef,protected-attrib,protected_attribute);
+    JSON_ACCESS_STRING_WITH_KEY(SectionDef,protected-func,protected_function);
+    JSON_ACCESS_STRING_WITH_KEY(SectionDef,protected-static-func,protected_static_function);
     JSON_ACCESS_STRING_WITH_KEY(SectionDef,protected-type,protected_type);
     JSON_ACCESS_STRING_WITH_KEY(SectionDef,public-attrib,public_attribute);
     JSON_ACCESS_STRING_WITH_KEY(SectionDef,public-func,public_function);
-    JSON_ACCESS_STRING_WITH_KEY(SectionDef,private-attrib,private_attribute);
-    JSON_ACCESS_STRING_WITH_KEY(SectionDef,private-func,private_function);
-    JSON_ACCESS_STRING_WITH_KEY(SectionDef,protected-func,protected_function);
-    JSON_ACCESS_STRING_WITH_KEY(SectionDef,private-static-func,private_static_function);
-    JSON_ACCESS_STRING_WITH_KEY(SectionDef,protected-static-func,protected_static_function);
-    JSON_ACCESS_STRING_WITH_KEY(SectionDef,public-static-func,public_static_function);
-    JSON_ACCESS_STRING_WITH_KEY(SectionDef,private-static-attrib,private_static_attribute);
     JSON_ACCESS_STRING_WITH_KEY(SectionDef,public-static-attrib,public_static_attribute);
-    JSON_ACCESS_STRING_WITH_KEY(SectionDef,protected-attrib,protected_attribute);
+    JSON_ACCESS_STRING_WITH_KEY(SectionDef,public-static-func,public_static_function);
+    JSON_ACCESS_STRING_WITH_KEY(SectionDef,public-type,public_type);
 
     static bool is_private(var::StringView kind){
       return kind.find("private") != var::StringView::npos;
@@ -84,6 +111,7 @@ public:
 
   JSON_ACCESS_OBJECT(Configuration,DetailedDescription,detaileddescription);
   JSON_ACCESS_OBJECT(Configuration,General,general);
+  JSON_ACCESS_OBJECT(Configuration,Input,input);
   JSON_ACCESS_OBJECT(Configuration,ListOfAllMembers,listofallmembers);
   JSON_ACCESS_OBJECT(Configuration,MemberDef,memberdef);
   JSON_ACCESS_OBJECT(Configuration,ProgramListing,programlisting);
