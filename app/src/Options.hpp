@@ -20,7 +20,6 @@ public:
 
     const auto is_help = cli.get_option("help") == "true";
 
-
     if (const auto value
         = cli.get_option("json", "Format the output as JSON (default is YAML)");
         !value.is_empty()) {
@@ -63,17 +62,13 @@ public:
 
     if (const auto value = cli.get_option(
           "showConfiguration",
-          "Show the active configuration. If no `--configuration` is "
-          "specified, the default is shown. If `--configuration` is specified, "
-          "it is merged with the default options to show the complete "
-          "configuration. User configuration files only need to specify "
-          "changes from the default.");
+          "Show the active configuration.");
         !value.is_empty()) {
 
       m_is_show_configuration = value == "true";
       if (m_is_show_configuration && !is_help) {
         printer().object("configuration", m_configuration);
-        if( is_json() ){
+        if (is_json()) {
           printer().newline();
         }
         exit(0);
@@ -123,6 +118,12 @@ public:
         EEXIST);
     }
 
+    if (const auto value = cli.get_option(
+          "manual",
+          "Shows the manual in mardown format.");
+        !value.is_empty()) {
+      m_is_manual = value == "true";
+    }
     // needs to be last
     if (const auto value = cli.get_option("help", "Show this help menu");
         !value.is_empty()) {
@@ -141,6 +142,20 @@ public:
             show_help();
           }
           printer().newline();
+        } else if (is_manual()) {
+          printer::MarkdownPrinter markdown_printer;
+          {
+            printer::MarkdownPrinter::Header help_header(
+              markdown_printer,
+              "Help Output");
+            printer().newline();
+            {
+              printer::MarkdownPrinter::Code code_block(
+                markdown_printer,
+                "yaml");
+              show_help();
+            }
+          }
         } else {
           show_help();
         }
@@ -157,6 +172,7 @@ private:
   API_AC(Options, PathString, destination);
   API_AB(Options, help, false);
   API_AB(Options, json, false);
+  API_AB(Options, manual, false);
   API_AB(Options, show_configuration, false);
 
   Configuration m_configuration;
