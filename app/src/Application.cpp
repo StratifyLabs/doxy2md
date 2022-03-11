@@ -11,9 +11,10 @@
 void Application::run(const sys::Cli &cli) {
   printer().set_verbose_level(cli.get_option("verbose"));
 
-  Printer::Object run_object(printer(), "doxy2md");
 
   const auto options = Options(cli);
+
+  Printer::Object run_object(printer(), "doxy2md");
 
   if (check_error() == IsAbort::yes) {
     return;
