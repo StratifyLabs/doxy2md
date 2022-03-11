@@ -17,7 +17,6 @@
 class Options : public IOAccess {
 public:
   explicit Options(const sys::Cli &cli) {
-
     const auto is_help = cli.get_option("help") == "true";
 
     if (const auto value
@@ -27,6 +26,30 @@ public:
       m_is_json = value == "true";
       if (m_is_json) {
         switch_to_json_printer();
+      }
+    }
+
+    if (const auto value = cli.get_option("version", "Show the version");
+        !value.is_empty()) {
+      if (!is_help) {
+
+        auto show_version = [&](){
+          cli.show_version(sys::Cli::ShowVersion()
+                             .set_version(VERSION)
+                             .set_publisher("Stratify Labs, Inc")
+                             .set_printer(&printer()));
+        };
+
+        if (is_json()) {
+          {
+            printer::Printer::Object po(printer(), "root");
+            show_version();
+          }
+          printer().newline();
+        } else {
+          show_version();
+        }
+        exit(0);
       }
     }
 
@@ -60,9 +83,8 @@ public:
       m_configuration = Configuration::make_defaults();
     }
 
-    if (const auto value = cli.get_option(
-          "showConfiguration",
-          "Show the active configuration.");
+    if (const auto value
+        = cli.get_option("showConfiguration", "Show the active configuration.");
         !value.is_empty()) {
 
       m_is_show_configuration = value == "true";
@@ -118,9 +140,8 @@ public:
         EEXIST);
     }
 
-    if (const auto value = cli.get_option(
-          "manual",
-          "Shows the manual in mardown format.");
+    if (const auto value
+        = cli.get_option("manual", "Shows the manual in mardown format.");
         !value.is_empty()) {
       m_is_manual = value == "true";
     }
