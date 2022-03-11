@@ -99,12 +99,20 @@ private:
   }
 
   bool is_internal_link(var::StringView item) const {
-    return item.find(m_compound_def_id) == 0;
+    if(is_link_with_hash(item) ){
+      const auto link_without_hash = get_link_without_hash(item);
+      return link_without_hash == m_compound_def_id.string_view();
+    }
+    return false;
   }
 
   static bool is_link_with_hash(var::StringView item) {
     const var::StringView hash = example_hash;
     if (item.length() < hash.length() + 1) {
+      return false;
+    }
+    const auto item_hash = StringView(item).pop_front(item.length() - hash.length());
+    if( item_hash.find("_") != StringView::npos ){
       return false;
     }
     return item.pop_back(hash.length()).back() == '_';

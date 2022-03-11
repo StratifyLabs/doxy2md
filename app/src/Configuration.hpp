@@ -31,6 +31,13 @@ public:
     JSON_ACCESS_STRING_WITH_KEY(General,basePath,base_path);
   };
 
+  class InnerClass : public json::JsonValue {
+  public:
+    JSON_ACCESS_CONSTRUCT_OBJECT(InnerClass);
+    JSON_ACCESS_STRING(InnerClass,label);
+  };
+
+
   class Input : public json::JsonValue {
   public:
 
@@ -111,6 +118,7 @@ public:
 
   JSON_ACCESS_OBJECT(Configuration,DetailedDescription,detaileddescription);
   JSON_ACCESS_OBJECT(Configuration,General,general);
+  JSON_ACCESS_OBJECT(Configuration,InnerClass,innerclass);
   JSON_ACCESS_OBJECT(Configuration,Input,input);
   JSON_ACCESS_OBJECT(Configuration,ListOfAllMembers,listofallmembers);
   JSON_ACCESS_OBJECT(Configuration,MemberDef,memberdef);

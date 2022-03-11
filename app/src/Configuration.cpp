@@ -17,6 +17,8 @@ Configuration Configuration::make_defaults() {
                        .set_base_path("")
                        .set_front_matter(false));
 
+  result.set_innerclass(InnerClass().set_label("- Nested: "));
+
   result.set_input(Input().set_sources(var::Vector<Input::Source>().push_back(
     Input::Source().set_input(".").set_output("."))));
 

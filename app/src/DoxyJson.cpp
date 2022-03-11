@@ -263,6 +263,8 @@ void DoxyJson::handle_declname(json::JsonValue input) {
 }
 void DoxyJson::handle_definition(json::JsonValue input) {
   HANDLE_ADD_LINKS(input);
+
+
 }
 void DoxyJson::handle_derivedcompoundref(json::JsonValue input) {
   HANDLE_ADD_LINKS(input);
@@ -341,25 +343,18 @@ void DoxyJson::handle_innerclass(json::JsonValue input) {
   HANDLE_ADD_LINKS(input);
 
   if (is_summary() || !config().general().is_generate_summary()) {
-    API_PRINTF_TRACE_LINE();
     const auto prot = get_value_as_string_view(input, "@prot");
-    printf("PRotection %s\n", PathString(prot).cstring());
     if (prot == "private" && !config().general().is_show_private()) {
-      API_PRINTF_TRACE_LINE();
       return;
     }
 
     if (prot == "protected" && !config().general().is_show_protected()) {
-      API_PRINTF_TRACE_LINE();
       return;
     }
 
-    API_PRINTF_TRACE_LINE();
     const auto refid = get_ref_id(input);
     const auto text = get_value_as_string_view(input, "#text");
-
-    printf("refid %s\n", PathString(refid).cstring());
-    print("- Nested Class: ");
+    print(config().innerclass().get_label());
     print_hyperlink(text, get_link_url(refid));
     newline();
   }
@@ -550,8 +545,10 @@ void DoxyJson::handle_sectiondef(json::JsonValue input) {
   if (
     Configuration::SectionDef::is_private(kind_string)
     && !config().general().is_show_private()) {
+    printer().debug("skip private section " | kind_string);
     return;
   }
+
   const auto kind = [&]() {
     const auto result = config().sectiondef().to_object().at(kind_string);
     if (result.is_valid()) {
