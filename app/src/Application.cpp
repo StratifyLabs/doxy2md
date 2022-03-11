@@ -48,6 +48,9 @@ void Application::run(const sys::Cli &cli) {
         const auto include_container = source_object.get_include();
 
         const auto is_excluded = [&]() {
+
+          //if no exclude is specified, but include is specified
+          //exclude everything but that is included
           if (
             (exclude_container.count() == 0)
             && (include_container.count() > 0)) {
@@ -62,6 +65,8 @@ void Application::run(const sys::Cli &cli) {
         }();
 
         const auto is_included = [&]() {
+          //included items will always be included even
+          //if they match an exclude
           for (const auto &item : include_container) {
             if (source_path.string_view().find(item) != StringView::npos) {
               return true;

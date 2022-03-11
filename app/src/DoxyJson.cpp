@@ -226,6 +226,11 @@ void DoxyJson::handle_compounddef(json::JsonValue input) {
     if (title.is_empty()) {
       const auto compound_name
         = get_value_as_string_view(input, "compoundname");
+
+      if( kind == "namespace" ){
+        return "namespace::" | compound_name;
+      }
+
       return GeneralString(compound_name);
     }
     return GeneralString(title);
@@ -410,6 +415,10 @@ void DoxyJson::handle_member(json::JsonValue input) {
     return;
   }
 
+  if (prot == "protected" && !config().general().is_show_protected()) {
+    return;
+  }
+
   print("- ");
   const auto id = get_ref_id(input);
   print_hyperlink(scope | "::" | name, get_link_url(id));
@@ -543,6 +552,13 @@ void DoxyJson::handle_sectiondef(json::JsonValue input) {
     Configuration::SectionDef::is_private(kind_string)
     && !config().general().is_show_private()) {
     printer().debug("skip private section " | kind_string);
+    return;
+  }
+
+  if (
+    Configuration::SectionDef::is_proteted(kind_string)
+    && !config().general().is_show_protected()) {
+    printer().debug("skip protected section " | kind_string);
     return;
   }
 
