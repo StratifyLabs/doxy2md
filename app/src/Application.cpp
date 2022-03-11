@@ -43,8 +43,15 @@ void Application::run(const sys::Cli &cli) {
       if (Path::suffix(source_path) == "xml") {
         api::ErrorScope error_scope;
 
+        const auto exclude_container = source_object.get_exclude();
+        const auto include_container = source_object.get_include();
+
         const auto is_excluded = [&]() {
-          const auto exclude_container = source_object.get_exclude();
+          if (
+            (exclude_container.count() == 0)
+            && (include_container.count() > 0)) {
+            return true;
+          }
           for (const auto &item : exclude_container) {
             if (source_path.string_view().find(item) != StringView::npos) {
               return true;
@@ -54,10 +61,6 @@ void Application::run(const sys::Cli &cli) {
         }();
 
         const auto is_included = [&]() {
-          const auto include_container = source_object.get_include();
-          if (include_container.count() == 0) {
-            return true;
-          }
           for (const auto &item : include_container) {
             if (source_path.string_view().find(item) != StringView::npos) {
               return true;
@@ -66,7 +69,7 @@ void Application::run(const sys::Cli &cli) {
           return false;
         }();
 
-        if (!is_excluded && is_included) {
+        if (!is_excluded || is_included) {
 
           const auto output_directory
             = options.destination() / source_object.get_output();

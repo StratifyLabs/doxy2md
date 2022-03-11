@@ -225,7 +225,7 @@ void DoxyJson::handle_compounddef(json::JsonValue input) {
     if (title.is_empty()) {
       const auto compound_name
         = get_value_as_string_view(input, "compoundname");
-      return "`" | kind | "` " | compound_name;
+      return GeneralString(compound_name);
     }
     return GeneralString(title);
   }();
@@ -426,7 +426,7 @@ void DoxyJson::handle_memberdef(json::JsonValue input) {
   const auto definition = get_value_as_string_view(input, "definition");
   const auto argsstring = get_value_as_string_view(input, "argsstring");
 
-  const auto show_name = name | (kind == "function" ? "()" : "");
+  const auto show_name = name | (kind == "function" ? " ()" : "");
 
   if (is_summary()) {
     printer().message("memberdef summary " | name);
