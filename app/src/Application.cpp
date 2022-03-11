@@ -40,7 +40,6 @@ void Application::run(const sys::Cli &cli) {
     DoxyJson::LinkContainer link_container;
     for (const auto &source_path : source_path_container) {
 
-      Printer::Object run_object(printer(), source_path);
       if (Path::suffix(source_path) == "xml") {
         api::ErrorScope error_scope;
 
@@ -76,6 +75,7 @@ void Application::run(const sys::Cli &cli) {
         }();
 
         if (!is_excluded || is_included) {
+          Printer::Object run_object(printer(), source_path);
 
           const auto output_directory
             = options.destination() / source_object.get_output();
@@ -98,9 +98,11 @@ void Application::run(const sys::Cli &cli) {
             File(File::IsOverwrite::yes, output_path).write(doxy_json.output());
           }
           check_error();
+        } else {
+          printer().key(source_path, "excluded");
         }
       } else {
-        printer().info("skipping");
+        printer().key(source_path, "not a .xml file");
       }
     }
     {

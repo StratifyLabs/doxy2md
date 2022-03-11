@@ -11,6 +11,12 @@ class Configuration : public json::JsonValue {
 public:
   JSON_ACCESS_CONSTRUCT_OBJECT(Configuration);
 
+  class BaseCompoundRef : public json::JsonValue {
+  public:
+    JSON_ACCESS_CONSTRUCT_OBJECT(BaseCompoundRef);
+    JSON_ACCESS_STRING(BaseCompoundRef,label);
+  };
+
   class DetailedDescription : public json::JsonValue {
   public:
     JSON_ACCESS_CONSTRUCT_OBJECT(DetailedDescription);
@@ -69,6 +75,8 @@ public:
     JSON_ACCESS_STRING(MemberDef,friend);
     JSON_ACCESS_STRING(MemberDef,typedef);
     JSON_ACCESS_STRING(MemberDef,enum);
+    JSON_ACCESS_STRING_WITH_KEY(MemberDef,typeLabel,type_label);
+    JSON_ACCESS_STRING_WITH_KEY(MemberDef,parametersLabel,parameters_label);
   };
 
   class ProgramListing : public json::JsonValue {
@@ -118,6 +126,7 @@ public:
     JSON_ACCESS_STRING(SimpleSect,return);
   };
 
+  JSON_ACCESS_OBJECT(Configuration,BaseCompoundRef,basecompoundref);
   JSON_ACCESS_OBJECT(Configuration,DetailedDescription,detaileddescription);
   JSON_ACCESS_OBJECT(Configuration,General,general);
   JSON_ACCESS_OBJECT(Configuration,InnerClass,innerclass);

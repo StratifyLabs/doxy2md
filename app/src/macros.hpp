@@ -30,6 +30,12 @@
   }
 
 #define HANDLE_ADD_LINKS(input)                                                \
-  if (add_links(input)) return
+  if (add_links(input)) {                                                      \
+    return;                                                                    \
+  }                                                                            \
+  printer::Printer::Object enter_function(                                     \
+    printer(),                                                                 \
+    __FUNCTION__,                                                              \
+    printer::Printer::Level::message)
 
 #endif // DOXY2MD_MACROS_HPP

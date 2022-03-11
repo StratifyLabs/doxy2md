@@ -6,6 +6,9 @@
 
 Configuration Configuration::make_defaults() {
   Configuration result;
+
+  result.set_basecompoundref(BaseCompoundRef().set_label("- Inherits: "));
+
   result.set_detaileddescription(DetailedDescription().set_title("Details"));
 
   result.set_general(General()
@@ -30,7 +33,9 @@ Configuration Configuration::make_defaults() {
                          .set_friend("friend")
                          .set_function("function")
                          .set_typedef("typedef")
-                         .set_variable("variable"));
+                         .set_variable("variable")
+                         .set_type_label("***Type:*** ")
+                         .set_parameters_label("***Parameters:***"));
 
   result.set_programlisting(ProgramListing().set_language("cpp"));
 

@@ -54,6 +54,7 @@ private:
   };
 
   static constexpr auto example_hash = "1a834750161cc33b57f6cfa5733fc762b1";
+
   const Options *m_options = nullptr;
   StringPrinter m_printer;
   ProcessMode m_process_mode = ProcessMode::summary;
@@ -100,7 +101,7 @@ private:
 
   bool is_internal_link(var::StringView item) const {
     if (is_link_with_hash(item)) {
-      const auto link_without_hash = get_link_without_hash(item);
+      const auto link_without_hash = get_id_without_hash(item);
       return link_without_hash == m_compound_def_id.string_view();
     }
     return false;
@@ -119,53 +120,96 @@ private:
     return item.pop_back(hash.length()).back() == '_';
   }
 
-  static var::StringView get_link_without_hash(var::StringView item) {
-    const var::StringView hash = example_hash;
-    API_ASSERT(item.length() > hash.length() + 1);
-    return item.pop_back(hash.length() + 1);
+  static var::PathString get_id_without_hash(var::StringView item) {
+    const auto part_container = item.split("_");
+    int i = 0;
+    PathString result;
+    for (const auto &part : part_container) {
+      if (i < part_container.count() - 1) {
+        result &= part & "_";
+      }
+      ++i;
+    }
+    if (result.length()) {
+      result.pop_back();
+    }
+    return result;
   }
 
-  var::StringView get_external_prefix(var::StringView id) const {
-    for (const auto &link_tag : *m_external_link_container) {
-      for (const auto &link : link_tag.link_container) {
-        if (link == id) {
-          return link_tag.path;
+  var::PathString get_external_prefix(var::StringView id) const {
+    const auto result = [&]() {
+      for (const auto &link_tag : *m_external_link_container) {
+        for (const auto &link : link_tag.link_container) {
+          if (link == id) {
+            return m_external_prefix & link_tag.path;
+          }
         }
       }
-    }
-    return "";
+      return m_external_prefix;
+    }();
+    printer().key("externalPrefix|" | id, result);
+    return result;
   }
 
-  var::PathString get_link_url(var::StringView id) const {
+  var::PathString
+  get_link_url(json::JsonArray input, var::StringView id) const {
 
-    const auto is_internal = is_internal_link(id);
-    const auto is_external_with_hash = !is_internal && is_link_with_hash(id);
+    printer::Printer::Object entry_object(
+      printer(),
+      __FUNCTION__,
+      printer::Printer::Level::debug);
 
+    const auto kindref = get_value_as_string_view(input, "@kindref");
+    const auto is_external_tag
+      = get_value(input, "@external").is_null() == false;
+    const auto is_compound = kindref == "compound";
+    const auto is_member = kindref == "member";
     const auto file_suffix = config().general().get_link_suffix();
 
-    if (!is_internal) {
-      const auto id_without_hash
-        = is_external_with_hash ? get_link_without_hash(id) : id;
+    const auto external_prefix = get_external_prefix(id);
+    const auto is_found_external = external_prefix != m_external_prefix;
 
-      const auto external_prefix = get_external_prefix(id);
+    printer()
+      .key("kindref", kindref)
+      .key("getLinkUrlforRefId", id)
+      .key_bool("isExternalTag", is_external_tag)
+      .key_bool("isFoundExternal", is_found_external)
+      .key_bool("isCompound", is_compound)
+      .key_bool("isMember", is_member);
 
-      if (external_prefix.is_empty()) {
-        if (id_without_hash == id) {
-          return id;
-        }
-        return id_without_hash & file_suffix & "#" & id;
-      }
-      // is there a prefix path
-      if (id_without_hash == id) {
-        return m_external_prefix & external_prefix / id_without_hash
-               & file_suffix;
-      }
-
-      return m_external_prefix & external_prefix / id_without_hash & file_suffix
-             & "#" & id;
+    if (id.is_empty()) {
+      return {};
     }
 
-    return (is_internal_link(id) ? "#" : "") & id;
+    const auto result = [&]() {
+      if (
+        is_external_tag
+        || (is_found_external)) { // from an external project
+
+        if (is_member) {
+          const auto id_without_hash = get_id_without_hash(id);
+          return external_prefix / id_without_hash & file_suffix & "#" & id;
+        }
+
+        return external_prefix / id & file_suffix;
+      }
+
+      if (is_member) {
+        const auto id_without_hash = get_id_without_hash(id);
+        return id_without_hash & file_suffix & "#" & id;
+      }
+
+      if (m_compound_def_id == id) {
+        return PathString("#");
+      }
+      return id & file_suffix;
+    }();
+
+    printer().key("getUrlResult", result);
+    if (result.is_empty()) {
+      printer().warning("hyperlink for `" | id | "` is empty");
+    }
+    return result;
   }
 
   var::String get_id(json::JsonArray input) const {
@@ -184,7 +228,16 @@ private:
   }
 
   void print_hyperlink(var::StringView text, var::StringView url) {
-    print("[" | text | "](" | url | ")");
+    printer().key("text", text).key("url", url);
+    if (url.is_empty()) {
+      print(text);
+    } else {
+      printer::Printer::Object po(
+        printer(),
+        "hyperlink",
+        printer::Printer::Level::debug);
+      print("[" | text | "](" | url | ")");
+    }
   }
 
   void print_anchor(var::StringView name) {
