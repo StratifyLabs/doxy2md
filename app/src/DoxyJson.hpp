@@ -63,6 +63,8 @@ private:
   const LinkTagContainer *m_external_link_container;
   API_AC(DoxyJson, var::PathString, relative_output_folder);
   var::PathString m_external_prefix;
+  using NameContainer = var::Vector<NameString>;
+  NameContainer m_name_container;
 
   void print(json::JsonValue input) {
     if (input.is_null()) {
@@ -281,6 +283,13 @@ private:
       return json_value.to_string_view();
     }
     return "";
+  }
+
+  var::StringView get_parent_name() const {
+    if( m_name_container.count() > 1 ){
+      return m_name_container.at(m_name_container.count() - 2);
+    }
+    return {};
   }
 
   void newline() { m_printer.newline(); }

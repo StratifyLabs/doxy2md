@@ -33,6 +33,8 @@ DoxyJson &DoxyJson::process_file(var::StringView path) {
     m_external_prefix = "";
   }
 
+  m_name_container.reserve(64);
+
   JsonDocument json_document;
   const auto object = [&]() {
     const auto suffix = Path::suffix(path);
@@ -152,8 +154,6 @@ void DoxyJson::handle(var::StringView name, json::JsonValue input) {
   HANDLE(title, input)
   HANDLE(type, input)
 
-  HANDLE_AMP(refid, input)
-
 #if 0
   HANDLE_AT(bodyend, input)
   HANDLE_AT(bodyfile, input)
@@ -269,9 +269,11 @@ void DoxyJson::handle_compounddef(json::JsonValue input) {
   if (config().general().is_generate_summary() == false) {
     newline();
     show_title();
+    handle_detaileddescription(get_value(input, "detaileddescription"));
+    newline();
     print(input);
   } else {
-    MarkdownPrinter::Header md_po(m_printer, "Details");
+    handle_detaileddescription(get_value(input, "detaileddescription"));
     newline();
     print(input);
   }
@@ -298,6 +300,10 @@ void DoxyJson::handle_detaileddescription(json::JsonValue input) {
   }
 
   if (input.is_null()) {
+    return;
+  }
+
+  if( get_parent_name() == "compounddef" ){
     return;
   }
 

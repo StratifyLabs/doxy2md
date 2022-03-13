@@ -7,26 +7,26 @@
 
 #define HANDLE(x, input)                                                       \
   if (name == MCU_STRINGIFY(x)) {                                              \
+    m_name_container.push_back(name);                                               \
     handle_##x(input);                                                         \
+    m_name_container.pop_back();                                                    \
     return;                                                                    \
   }
 
 #define HANDLE_AT(x, input)                                                    \
   if (name == "@" MCU_STRINGIFY(x)) {                                          \
+    m_name_container.push_back(name);                                               \
     handle_at_##x(input);                                                      \
-    return;                                                                    \
+    m_name_container.pop_back();                                                    \
+   return;                                                                    \
   }
 
 #define HANDLE_HASHTAG(x, input)                                               \
   if (name == "#" MCU_STRINGIFY(x)) {                                          \
+    m_name_container.push_back(name);                                               \
     handle_hashtag_##x(input);                                                 \
-    return;                                                                    \
-  }
-
-#define HANDLE_AMP(x, input)                                                   \
-  if (name == "&" MCU_STRINGIFY(x)) {                                          \
-    handle_amp_##x(input);                                                     \
-    return;                                                                    \
+    m_name_container.pop_back();                                                    \
+   return;                                                                    \
   }
 
 #define HANDLE_ADD_LINKS(input)                                                \
