@@ -1,15 +1,14 @@
 # doxy2md
 
-doxy2md is a command line tool for generating markdown files from doxygen XML output.
+doxy2md is a command line tool for generating markdown files from doxygen XML output. It is written in C++ for C++ documentation.
 
 ## Download
 
-This project is in a pre-release state. So there are no binaries available to download.
+This project is in a pre-release state. There are no binaries available to download.
 
 ## Building
 
-To build, you need to have `cmake`, `git`, and a `clang`/`mingw`/`gcc` compiler installed. The commands below will
-use `ninja` but that is not required.
+To build, you need to have `cmake`, `git`, and a `clang`/`mingw`/`gcc` compiler installed. The commands below will use `ninja`, but you could also use another generator like `make`.
 
 ```bash
 git clone https://github.com/StratifyLabs/doxy2md
@@ -21,12 +20,14 @@ cmake .. -GNinja
 ninja install
 ```
 
-By default, `doxy2md` is copied to the SDK folder that is created in the bootstrap process. You can use the following to
+By default, `doxy2md` is copied to the SDK folder that is created in the bootstrap process in a subfolder of the `doxy2md` repository. You can use the following to
 see the full path of the tool.
 
 ```bash
 which doxy2md
 ```
+
+You can completely remove `doxy2md` from your computer by deleting the repository.
 
 ## Running
 
