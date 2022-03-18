@@ -124,6 +124,7 @@ public:
   public:
     JSON_ACCESS_CONSTRUCT_OBJECT(SimpleSect);
     JSON_ACCESS_STRING(SimpleSect,return);
+    JSON_ACCESS_STRING(SimpleSect,see);
   };
 
   JSON_ACCESS_OBJECT(Configuration,BaseCompoundRef,basecompoundref);

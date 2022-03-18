@@ -61,7 +61,8 @@ Configuration Configuration::make_defaults() {
       .set_public_type("Types")
       .set_typedef("Type Definitions"));
 
-  result.set_simplesect(SimpleSect().set_return("Returns:"));
+  result.set_simplesect(
+    SimpleSect().set_return("Returns:").set_see("See Also:"));
 
   return result;
 }

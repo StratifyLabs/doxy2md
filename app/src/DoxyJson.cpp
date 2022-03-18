@@ -127,6 +127,7 @@ void DoxyJson::handle(var::StringView name, json::JsonValue input) {
   HANDLE(codeline, input)
   HANDLE(compounddef, input)
   HANDLE(compoundname, input)
+  HANDLE(computeroutput, input)
   HANDLE(declname, input)
   HANDLE(definition, input)
   HANDLE(detaileddescription, input)
@@ -151,6 +152,7 @@ void DoxyJson::handle(var::StringView name, json::JsonValue input) {
   HANDLE(sectiondef, input)
   HANDLE(simplesect, input)
   HANDLE(sp, input)
+  HANDLE(templateparamlist, input)
   HANDLE(title, input)
   HANDLE(type, input)
 
@@ -253,13 +255,9 @@ void DoxyJson::handle_compounddef(json::JsonValue input) {
 
   printer().key("effectiveTitle", effective_title).key("id", id);
 
-  auto show_title = [&]() {
+  if (is_summary()) {
     MarkdownPrinter::Header header(m_printer, effective_title);
     newline();
-  };
-
-  if (is_summary()) {
-    show_title();
     MarkdownPrinter::Header md_po(m_printer, "Summary");
     newline();
     print(input);
@@ -268,7 +266,8 @@ void DoxyJson::handle_compounddef(json::JsonValue input) {
 
   if (config().general().is_generate_summary() == false) {
     newline();
-    show_title();
+    MarkdownPrinter::Header header(m_printer, effective_title);
+    newline();
     handle_detaileddescription(get_value(input, "detaileddescription"));
     newline();
     print(input);
@@ -283,6 +282,17 @@ void DoxyJson::handle_compoundname(json::JsonValue input) {
   HANDLE_ADD_LINKS(input);
   printer().key("value", input.to_string_view());
 }
+
+void DoxyJson::handle_computeroutput(json::JsonValue input) {
+  HANDLE_ADD_LINKS(input);
+
+  if (input.is_string()) {
+    print_inline_code(input.to_string_view());
+  } else {
+    print(input);
+  }
+}
+
 void DoxyJson::handle_declname(json::JsonValue input) {
   HANDLE_ADD_LINKS(input);
 }
@@ -303,7 +313,7 @@ void DoxyJson::handle_detaileddescription(json::JsonValue input) {
     return;
   }
 
-  if( get_parent_name() == "compounddef" ){
+  if (get_parent_name() == "compounddef") {
     return;
   }
 
@@ -553,7 +563,13 @@ void DoxyJson::handle_name(json::JsonValue input) { HANDLE_ADD_LINKS(input); }
 
 void DoxyJson::handle_para(json::JsonValue input) {
   HANDLE_ADD_LINKS(input);
+  if (has_parent("listitem") == false) {
+    newline();
+  }
   print(input);
+  if (has_parent("listitem") == false) {
+    newline();
+  }
 }
 
 void DoxyJson::handle_param(json::JsonValue input) {
@@ -602,6 +618,11 @@ void DoxyJson::handle_programlisting(json::JsonValue input) {
 
 void DoxyJson::handle_ref(json::JsonValue input) {
   HANDLE_ADD_LINKS(input);
+
+  if (has_parent("codeline")) {
+    print(get_value_as_string_view(input, "#text"));
+    return;
+  }
 
   print_hyperlink(
     get_value_as_string_view(input.to_array(), "#text"),
@@ -667,6 +688,13 @@ void DoxyJson::handle_simplesect(json::JsonValue input) {
 void DoxyJson::handle_sp(json::JsonValue input) {
   HANDLE_ADD_LINKS(input);
   print(" ");
+  print(input);
+}
+
+void DoxyJson::handle_templateparamlist(json::JsonValue input) {
+  HANDLE_ADD_LINKS(input);
+  print("***Template Parameters***");
+  newline();
   print(input);
 }
 

@@ -198,7 +198,7 @@ private:
 
       if (is_member) {
         const auto id_without_hash = get_id_without_hash(id);
-        return id_without_hash & file_suffix & "#" & id;
+        return "#" & id;
       }
 
       if (m_compound_def_id == id) {
@@ -292,6 +292,15 @@ private:
     return {};
   }
 
+  bool has_parent(const var::StringView name) const {
+    for(const auto & parent_name: m_name_container){
+      if( parent_name == name ){
+        return true;
+      }
+    }
+    return false;
+  }
+
   void newline() { m_printer.newline(); }
 
   void process_links(var::StringView name, json::JsonValue input);
@@ -313,6 +322,7 @@ private:
   void handle_codeline(json::JsonValue input);
   void handle_compounddef(json::JsonValue input);
   void handle_compoundname(json::JsonValue input);
+  void handle_computeroutput(json::JsonValue input);
   void handle_declname(json::JsonValue input);
   void handle_definition(json::JsonValue input);
   void handle_derivedcompoundref(json::JsonValue input);
@@ -339,6 +349,7 @@ private:
   void handle_simplesect(json::JsonValue input);
   void handle_sp(json::JsonValue input);
   void handle_title(json::JsonValue input);
+  void handle_templateparamlist(json::JsonValue input);
   void handle_type(json::JsonValue input);
 
   void handle_amp_refid(json::JsonValue input);
