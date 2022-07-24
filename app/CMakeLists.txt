@@ -9,8 +9,8 @@ set(DEPENDENCIES
 
 set(LOCAL_NAME ${PROJECT_NAME})
 
-sos_sdk_add_subdirectory(PRIVATE_SOURCELIST ${CMAKE_CURRENT_SOURCE_DIR}/src)
-sos_sdk_app_target(RELEASE ${LOCAL_NAME} "" release ${SOS_ARCH})
+cmsdk_add_subdirectory(PRIVATE_SOURCELIST ${CMAKE_CURRENT_SOURCE_DIR}/src)
+cmsdk_app_target(RELEASE ${LOCAL_NAME} "" release ${CMSDK_ARCH})
 add_executable(${RELEASE_TARGET})
 target_sources(${RELEASE_TARGET}
   PRIVATE
@@ -34,8 +34,8 @@ target_compile_options(${RELEASE_TARGET}
 
 set_property(TARGET ${RELEASE_TARGET} PROPERTY CXX_STANDARD 17)
 
-sos_sdk_app_add_arch_targets("${RELEASE_OPTIONS}" "${DEPENDENCIES}" 0)
+cmsdk_app_add_arch_targets("${RELEASE_OPTIONS}" "${DEPENDENCIES}" 0)
 
 install(
-  PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/build_release_link/${LOCAL_NAME}_release_link.elf${SOS_SDK_EXEC_SUFFIX}
-  DESTINATION ${SOS_SDK_PATH}/bin RENAME ${LOCAL_NAME}${SOS_SDK_EXEC_SUFFIX})
+  PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/build_release_link/${LOCAL_NAME}_release_link.elf${CMSDK_EXEC_SUFFIX}
+  DESTINATION ${CMSDK_LOCAL_PATH}/bin RENAME ${LOCAL_NAME}${CMSDK_EXEC_SUFFIX})

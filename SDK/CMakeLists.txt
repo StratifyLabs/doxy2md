@@ -21,7 +21,7 @@ execute_process(
 )
 
 macro(sdk_add_subdirectory NAME BRANCH)
-  sos_sdk_git_clone_or_pull_branch(${BASE_DIRECTORY} ${NAME} https://github.com/StratifyLabs/${NAME}.git ${BRANCH})
+  cmsdk_git_clone_or_pull_branch(${BASE_DIRECTORY} ${NAME} https://github.com/StratifyLabs/${NAME}.git ${BRANCH})
   add_subdirectory(${BASE_DIRECTORY}/${NAME} ${NAME} EXCLUDE_FROM_ALL)
 endmacro()
 
@@ -37,20 +37,10 @@ if(SDK_IS_TEST)
   set(CRYPTO_API_IS_TEST ON CACHE INTERNAL "Enable CryptoAPI Test")
 endif()
 
-set(SOS_CONFIG_PATH ${CMAKE_CURRENT_SOURCE_DIR}/config CACHE INTERNAL "StratifyOS config directory")
-set(LWIP_STRATIFYOS_PATH
-  ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/StratifyOS/include
-  CACHE INTERNAL "LWIP StratifyOS INCLUDE PATHS")
-
-sdk_add_subdirectory(API main)
+sdk_add_subdirectory(API feature/cmsdk-port-v2.0)
 include(${BASE_DIRECTORY}/API/libraries/API.cmake)
 
-set(LWIP_CONFIG_PATH ${CMAKE_CURRENT_SOURCE_DIR}/config CACHE INTERNAL "LWIP config path")
-set(MBEDTLS_CONFIG_FILE ${CMAKE_CURRENT_SOURCE_DIR}/config/mbedtls/config.h CACHE INTERNAL "MBEDTLS config file")
-
-add_subdirectory(dependencies/CMakeSDK CMakeSDK)
-
-sdk_add_subdirectory(JsonAPI main)
+sdk_add_subdirectory(JsonAPI feature/cmsdk-port-v2.0)
 
 
 
