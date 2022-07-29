@@ -37,10 +37,10 @@ if(SDK_IS_TEST)
   set(CRYPTO_API_IS_TEST ON CACHE INTERNAL "Enable CryptoAPI Test")
 endif()
 
-sdk_add_subdirectory(API feature/cmsdk-port-v2.0)
+sdk_add_subdirectory(API v1.5)
 include(${BASE_DIRECTORY}/API/libraries/API.cmake)
 
-sdk_add_subdirectory(JsonAPI feature/cmsdk-port-v2.0)
+sdk_add_subdirectory(JsonAPI v1.4)
 
 
 
